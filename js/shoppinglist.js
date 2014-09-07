@@ -95,12 +95,14 @@ var Actions = {
 		evt.preventDefault();
 		var elementId = "#" + evt.target.id;
 		if((evt.type === "click" && evt.target.id === "update") || evt.type === "keypress"){
-			if(confirm("Are you sure you want to rename this item?")){
-				var $editInput = $(elementId).prevAll("input[type=text]");
-				var labelText = $editInput.val();
+			var $editInput = $(elementId).prevAll("input[type=text]");
+			var labelText = $editInput.val();
+			if(Actions.validateInput(labelText)){
+				if(confirm("Are you sure you want to rename this item?")){
 					$editInput.siblings().remove();
 					$editInput.parent().html(labelText);
 					$editInput.remove();
+				}
 			}
 		} else {
 			var $hiddenInput = $(elementId).prevAll("input[type=hidden]");
