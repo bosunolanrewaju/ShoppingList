@@ -6,8 +6,8 @@ var $checkedItems = $("#checked-list ul");
 var addListItem = function(item, list){
 	var content = '<label for="' + item.toLowerCase() + '">' + item + '</label>';
 		content += '<input type="checkbox" id="' + item.toLowerCase() + '" value="' + item + '">';
-		content += '<img id="delete" src="img/delete.png" alt="">';
-		content += '<img id="edit" src="img/edit.png" alt="">';
+		content += '<img id="delete" src="img/delete.png" alt="Delete" title="Delete">';
+		content += '<img id="edit" src="img/edit.png" alt="Edit" title="Edit">';
 	list.append('<li>'+ content +'</li>');
 }
 
@@ -53,10 +53,10 @@ var Actions = {
 
 	submitItem: function(evt){
 		item = $input.val();
-			Actions.checkList("before", evt);
-			addListItem(item, $listItems);
-			$input.val("")
-			$input.focus();
+		Actions.checkList("before", evt);
+		addListItem(item, $listItems);
+		$input.val("")
+		$input.focus();
 	},
 
 	deleteItem: function(){
@@ -71,18 +71,26 @@ var Actions = {
 	editItem: function(){
 		$(document).on("click", "#edit", function(){
 			var $label = $(this).siblings("label");
+			var $checkbox = $(this).siblings("input[type=checkbox]");
 			var editForm = "<input type='text' id='editInput' value='"+ $label.text() +"' >";
-				editForm += "<button id='update'>Update</button>";
-				editForm += "<button id='cancel'>Cancel</button>";
+				editForm += "<button id='update' type='button'>Update</button>";
+				editForm += "<button id='cancel' type='button'>Cancel</button>";
 				$label.html(editForm);
 		});
 	},
 
-	editAction: function(){
-		var labelText = $(this).prev("input[type=text]").val();
-			$(this).siblings().remove();
-			$(this).parent().html(labelText);
-			$(this).remove();
+	editAction: function(evt){
+		evt.preventDefault();
+		if((evt.type === "click" && evt.target.id === "update") || evt.type === "keypress"){
+			var elementId = "#" + evt.target.id;
+			var $editInput = $(elementId).prevAll("input");
+			var labelText = $editInput.val();
+				$editInput.siblings().remove();
+				$editInput.parent().html(labelText);
+				$editInput.remove();
+		} else {
+
+		}
 	},
 
 	checkboxChecked: function(){
@@ -123,7 +131,7 @@ var Actions = {
 	enterUpdateEdit: function(){
 		$(document).on("keypress", "#editInput", function(evt){
 			if(evt.keyCode === 13){
-				Actions.editAction();
+				Actions.editAction(evt);
 			}
 		});
 	},
@@ -150,14 +158,14 @@ var Actions = {
 	},
 
 	cancelEdit: function() {
-		$(document).on("click", "#cancel", function(){
-			Actions.editAction();
+		$(document).on("click", "#cancel", function(evt){
+			Actions.editAction(evt);
 		})
 	},
 
 	buttonUpdateEdit: function() {
-		$(document).on("click", "#update", function(){
-			Actions.editAction();
+		$(document).on("click", "#update", function(evt){
+			Actions.editAction(evt);
 		});
 	},
 

@@ -205,19 +205,33 @@ input#item:focus {
 	outline: none;
 }
 
-button#add-list {
+button#add-list, #cancel, #update {
 	width: 20%;
 	background: -webkit-linear-gradient(bottom, rgb(160,209,255), rgb(208,223,255));
 	border: 1px solid rgb(150,200,250);
 }
 
-button:hover, button:focus {
+button:hover, button:focus, #cancel:hover, #cancel:focus, #update:hover, #update:focus {
 	outline: none;
 	background: -webkit-linear-gradient(bottom, rgb(180,229,255), rgb(228,243,255));
 }
 
-button:active {
+button:active, #cancel:active, #update:active {
 	outline: none;
 	background: -webkit-linear-gradient(bottom, rgb(228,243,255), rgb(180,229,255));
 }
 
+#cancel, #update{
+	width: 15%;
+	margin-right: 4px;
+	font-size: 0.7em;
+	padding: 4px;
+}
+
+#editInput {
+	font-size: 0.7em;
+	width: 130px;
+	padding: 4px;
+	border-radius: 4px;
+	border: 1px solid lightblue;
+}
