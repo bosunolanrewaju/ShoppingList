@@ -32,6 +32,15 @@ var Actions = {
 
 	},
 
+	validateInput: function(input){
+		if(input === "" || input === " "){
+			$("#error").text("Empty item cannot be added to the list");
+			return false;
+		} else {
+			return true;
+		}
+	},
+
 	checkList: function(point, evt){
 		if(point === "after"){
 			if(!$listItems.has("li").length){
@@ -53,10 +62,12 @@ var Actions = {
 
 	submitItem: function(evt){
 		item = $input.val();
-		Actions.checkList("before", evt);
-		addListItem(item, $listItems);
-		$input.val("")
-		$input.focus();
+		if(Actions.validateInput(item)){
+			Actions.checkList("before", evt);
+			addListItem(item, $listItems);
+			$input.val("")
+			$input.focus();
+		}
 	},
 
 	deleteItem: function(){
@@ -73,6 +84,7 @@ var Actions = {
 			var $label = $(this).siblings("label");
 			var $checkbox = $(this).siblings("input[type=checkbox]");
 			var editForm = "<input type='text' id='editInput' value='"+ $label.text() +"' >";
+				editForm += "<input type='hidden' id='prevLabelText' value='"+ $label.text() +"' >";
 				editForm += "<button id='update' type='button'>Update</button>";
 				editForm += "<button id='cancel' type='button'>Cancel</button>";
 				$label.html(editForm);
@@ -81,15 +93,19 @@ var Actions = {
 
 	editAction: function(evt){
 		evt.preventDefault();
+		var elementId = "#" + evt.target.id;
 		if((evt.type === "click" && evt.target.id === "update") || evt.type === "keypress"){
-			var elementId = "#" + evt.target.id;
-			var $editInput = $(elementId).prevAll("input");
-			var labelText = $editInput.val();
-				$editInput.siblings().remove();
-				$editInput.parent().html(labelText);
-				$editInput.remove();
+			if(confirm("Are you sure you want to rename this item?")){
+				var $editInput = $(elementId).prevAll("input[type=text]");
+				var labelText = $editInput.val();
+					$editInput.siblings().remove();
+					$editInput.parent().html(labelText);
+					$editInput.remove();
+			}
 		} else {
-
+			var $hiddenInput = $(elementId).prevAll("input[type=hidden]");
+			var labelText = $hiddenInput.val();
+				$hiddenInput.parent().html(labelText);
 		}
 	},
 

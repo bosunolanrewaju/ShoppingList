@@ -117,6 +117,11 @@ h3 {
 }
 
 
+#error {
+	display: block;
+	color: red;
+}
+
 
 
 
@@ -211,12 +216,12 @@ button#add-list, #cancel, #update {
 	border: 1px solid rgb(150,200,250);
 }
 
-button:hover, button:focus, #cancel:hover, #cancel:focus, #update:hover, #update:focus {
+button#add-list:hover, button#add-list:focus, #cancel:hover, #cancel:focus, #update:hover, #update:focus {
 	outline: none;
 	background: -webkit-linear-gradient(bottom, rgb(180,229,255), rgb(228,243,255));
 }
 
-button:active, #cancel:active, #update:active {
+button#add-list:active, #cancel:active, #update:active {
 	outline: none;
 	background: -webkit-linear-gradient(bottom, rgb(228,243,255), rgb(180,229,255));
 }
