@@ -1,0 +1,43 @@
+<!DOCTYPE>
+<html>
+	<head>
+		<title>ShAsst - Your Shopping Assistant &#124; Olatunbosun Olanrewaju (Team Andela)</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/main.css">
+		<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+		<script src="js/jquery.js"></script>
+	</head>
+	<body>
+		<div id="wrapper">
+			<header>
+				<img src="img/logo.png" alt="ShAsst - Your shopping assistant">
+			</header>
+			<section class="clearfix">
+				<div id="input-container">
+					<h2>Your Online Shopping List</h2>
+					<input type="text" name="item" id="item" placeholder="Insert items here" autofocus="true">
+					<button id="add-list">Add to List</button>
+					<span id="error"></span>
+				</div>
+				<div id="unchecked-list">
+					<h3>Items to Buy</h3>
+					<ul>
+					List empty
+					</ul>
+				</div>
+				<div id="checked-list">
+					<h3>Bought(checked) Items</h3>
+					<ul>
+						Nothing purchased
+					</ul>
+				</div>
+			</section>
+		</div>
+		<footer>
+			<span>&copy; 2014 Andela Institute</span>
+		</footer>
+		<script src="js/shoppinglist.js"></script>
+	</body>
+</html>
