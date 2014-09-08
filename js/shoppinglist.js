@@ -91,21 +91,21 @@ var Actions = {
 		});
 	},
 
-	editAction: function(evt){
+	editAction: function(evt, act){
+		var $editInput;
 		evt.preventDefault();
-		var elementId = "#" + evt.target.id;
-		if((evt.type === "click" && evt.target.id === "update") || evt.type === "keypress"){
-			var $editInput = $(elementId).prevAll("input[type=text]");
+		if((evt.type === "click" && act.attr("id") === "update") || evt.type === "keypress"){
+			(evt.type === "keypress") ? $editInput = act : $editInput = act.prevAll("input[type=text]");
 			var labelText = $editInput.val();
-			if(Actions.validateInput(labelText)){
-				if(confirm("Are you sure you want to rename this item?")){
+			console.log($editInput);
+				if(confirm("Are you sure you want to rename this item?") && (labelText !== "" || labelText !== " ")){
+
 					$editInput.siblings().remove();
 					$editInput.parent().html(labelText);
 					$editInput.remove();
 				}
-			}
 		} else {
-			var $hiddenInput = $(elementId).prevAll("input[type=hidden]");
+			var $hiddenInput = act.prevAll("input[type=hidden]");
 			var labelText = $hiddenInput.val();
 				$hiddenInput.parent().html(labelText);
 		}
@@ -149,7 +149,7 @@ var Actions = {
 	enterUpdateEdit: function(){
 		$(document).on("keypress", "#editInput", function(evt){
 			if(evt.keyCode === 13){
-				Actions.editAction(evt);
+				Actions.editAction(evt, $(this));
 			}
 		});
 	},
@@ -177,13 +177,13 @@ var Actions = {
 
 	cancelEdit: function() {
 		$(document).on("click", "#cancel", function(evt){
-			Actions.editAction(evt);
+			Actions.editAction(evt, $(this));
 		})
 	},
 
 	buttonUpdateEdit: function() {
 		$(document).on("click", "#update", function(evt){
-			Actions.editAction(evt);
+			Actions.editAction(evt, $(this));
 		});
 	},
 
