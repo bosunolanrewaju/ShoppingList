@@ -156,7 +156,7 @@ var Actions = {
 // Key actions
 	enterUpdateEdit: function(){
 		$(document).on("keyup", "#editInput", function(evt){
-			if(evt.keyCode === 13){
+			if(evt.which === 13){
 				Actions.saveEdit(evt, $(this));
 			}
 		});
@@ -164,7 +164,7 @@ var Actions = {
 
 	enterSubmitItem: function(){
 		$(document).on("keyup", "#item", function(evt){
-			if(evt.keyCode === 13){
+			if(evt.which === 13){
 				Actions.addItem(evt);
 			}
 		});
@@ -172,7 +172,7 @@ var Actions = {
 
 	escapeCancel: function(){
 		$(document).on("keyup", "#editInput", function(evt){
-			if(evt.keyCode === 27){
+			if(evt.which === 27){
 				Actions.cancelEdit(evt, $(this));
 			}
 		})
