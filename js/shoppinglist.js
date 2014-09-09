@@ -32,6 +32,7 @@ var Actions = {
 
 	},
 
+// Actions
 	validateInput: function(input){
 		if(input === "" || input === " "){
 			$("#error").text("Empty item cannot be added to the list");
@@ -59,8 +60,7 @@ var Actions = {
 		}
 	},
 
-
-	submitItem: function(evt){
+	addItem: function(evt){
 		item = $input.val();
 		if(Actions.validateInput(item)){
 			Actions.checkList("before", evt);
@@ -68,6 +68,24 @@ var Actions = {
 			$input.val("")
 			$input.focus();
 		}
+	},
+
+	addEditForm: function(act){
+		var $label = act.siblings("label");
+		var $checkbox = act.siblings("input[type=checkbox]");
+		var editForm = "<input type='text' id='editInput' value='"+ $label.text() +"' >";
+			editForm += "<input type='hidden' id='prevLabelText' value='"+ $label.text() +"' >";
+			editForm += "<button id='update' type='button'>Update</button>";
+			editForm += "<button id='cancel' type='button'>Cancel</button>";
+			$label.html(editForm);
+	},
+
+	cancelEdit: function(evt, act){
+		evt.preventDefault();
+		var $hiddenInput = act.siblings("input[type=hidden]");
+		var labelText = $hiddenInput.val();
+		console.log(labelText);
+		$hiddenInput.parent().text(labelText);
 	},
 
 	deleteItem: function(){
@@ -81,34 +99,25 @@ var Actions = {
 
 	editItem: function(){
 		$(document).on("click", "#edit", function(){
-			var $label = $(this).siblings("label");
-			var $checkbox = $(this).siblings("input[type=checkbox]");
-			var editForm = "<input type='text' id='editInput' value='"+ $label.text() +"' >";
-				editForm += "<input type='hidden' id='prevLabelText' value='"+ $label.text() +"' >";
-				editForm += "<button id='update' type='button'>Update</button>";
-				editForm += "<button id='cancel' type='button'>Cancel</button>";
-				$label.html(editForm);
+			Actions.addEditForm($(this));
 		});
 	},
 
-	editAction: function(evt, act){
+	saveEdit: function(evt, act){
 		var $editInput;
 		evt.preventDefault();
-		if((evt.type === "click" && act.attr("id") === "update") || evt.type === "keypress"){
-			(evt.type === "keypress") ? $editInput = act : $editInput = act.prevAll("input[type=text]");
+		if((evt.type === "click" && act.attr("id") === "update") || evt.type === "keyup"){
+			(evt.type === "keyup") ? $editInput = act : $editInput = act.siblings("input[type=text]");
 			var labelText = $editInput.val();
-			console.log($editInput);
-				if(confirm("Are you sure you want to rename this item?") && (labelText !== "" || labelText !== " ")){
-
-					$editInput.siblings().remove();
-					$editInput.parent().html(labelText);
-					$editInput.remove();
+				if(confirm("Are you sure you want to rename this item?")){
+					if(labelText === "" || labelText === " "){
+						alert("Item name cannot be empty, if you want to remove, use the delete button");
+						Actions.cancelEdit(evt,act)
+					} else {
+						$editInput.parent().html(labelText);
+					}
 				}
-		} else {
-			var $hiddenInput = act.prevAll("input[type=hidden]");
-			var labelText = $hiddenInput.val();
-				$hiddenInput.parent().html(labelText);
-		}
+		} 
 	},
 
 	checkboxChecked: function(){
@@ -144,53 +153,60 @@ var Actions = {
 		Actions.listMouseOver();
 	},
 
-
-// Enter key actions
+// Key actions
 	enterUpdateEdit: function(){
-		$(document).on("keypress", "#editInput", function(evt){
+		$(document).on("keyup", "#editInput", function(evt){
 			if(evt.keyCode === 13){
-				Actions.editAction(evt, $(this));
+				Actions.saveEdit(evt, $(this));
 			}
 		});
 	},
 
 	enterSubmitItem: function(){
-		$(document).on("keypress", "#item", function(evt){
+		$(document).on("keyup", "#item", function(evt){
 			if(evt.keyCode === 13){
-				Actions.submitItem(evt);
+				Actions.addItem(evt);
 			}
 		});
 	},
 
+	escapeCancel: function(){
+		$(document).on("keyup", "#editInput", function(evt){
+			if(evt.keyCode === 27){
+				Actions.cancelEdit(evt, $(this));
+			}
+		})
+	},
 
 	onKeyPressed: function() {
 		Actions.enterUpdateEdit();
 		Actions.enterSubmitItem();
+		Actions.escapeCancel();
 	},
 
 // Button Actions
 	buttonSubmitItem:  function(){
 		$("#add-list").click(function(evt){
-			Actions.submitItem(evt);
+			Actions.addItem(evt);
 		});
 	},
 
-	cancelEdit: function() {
+	cancelEditButton: function() {
 		$(document).on("click", "#cancel", function(evt){
-			Actions.editAction(evt, $(this));
+			Actions.cancelEdit(evt, $(this));
 		})
 	},
 
-	buttonUpdateEdit: function() {
+	updateEditButton: function() {
 		$(document).on("click", "#update", function(evt){
-			Actions.editAction(evt, $(this));
+			Actions.saveEdit(evt, $(this));
 		});
 	},
 
 	onButtonClicked: function() {
 		Actions.buttonSubmitItem();
-		Actions.cancelEdit();
-		Actions.buttonUpdateEdit();
+		Actions.cancelEditButton();
+		Actions.updateEditButton();
 	}
 
 }
