@@ -21,6 +21,11 @@ var Actions = {
 		Actions.deleteItem();
 		Actions.editItem();
 
+		$("#editInput").click(function(evt){
+			evt.preventDefault();
+			console.log($(this));
+		});
+
 	},
 
 	// Adds item to listItems array and returns the new array
@@ -29,7 +34,7 @@ var Actions = {
 			content += '<input type="checkbox" id="' + item.toLowerCase() + '" value="' + item + '">';
 			content += '<img id="delete" src="img/delete.png" alt="Delete" title="Delete">';
 			content += '<img id="edit" src="img/edit.png" alt="Edit" title="Edit">';
-		list.append('<li>'+ content +'</li>');
+		list.append('<li class="clearfix">'+ content +'</li>');
 	},
 
 // Actions
@@ -77,19 +82,24 @@ var Actions = {
 
 	addEditForm: function(act){
 		var $label = act.siblings("label");
-		var $checkbox = act.siblings("input[type=checkbox]");
+		$checkbox = act.siblings("input:checkbox");
 		var editForm = "<input type='text' id='editInput' value='"+ $label.text() +"' >";
 			editForm += "<input type='hidden' id='prevLabelText' value='"+ $label.text() +"' >";
 			editForm += "<button id='update' type='button'>Update</button>";
 			editForm += "<button id='cancel' type='button'>Cancel</button>";
 			$label.html(editForm);
+			// $checkbox.hide();
+			act.remove();
 	},
 
 	cancelEdit: function(evt, act){
 		evt.preventDefault();
-		var $hiddenInput = act.siblings("input[type=hidden]");
+		$checkbox = act.parent().siblings("input:checkbox");
+		var $hiddenInput = act.siblings("input:hidden");
 		var labelText = $hiddenInput.val();
+		act.parent().parent().append('<img id="edit" src="img/edit.png" alt="Edit" title="Edit">');
 		$hiddenInput.parent().text(labelText);
+		$checkbox.show()
 	},
 
 	deleteItem: function(){
@@ -110,22 +120,25 @@ var Actions = {
 	saveEdit: function(evt, act){
 		var $editInput;
 		evt.preventDefault();
+		$checkbox = act.parent().siblings("input:checkbox");
 		if((evt.type === "click" && act.attr("id") === "update") || evt.type === "keyup"){
-			(evt.type === "keyup") ? $editInput = act : $editInput = act.siblings("input[type=text]");
+			(evt.type === "keyup") ? $editInput = act : $editInput = act.siblings("input:text");
 			var labelText = $editInput.val();
 				if(confirm("Are you sure you want to rename this item?")){
 					if(labelText === "" || labelText === " "){
 						alert("Item name cannot be empty, if you want to remove, use the delete button");
-						Actions.cancelEdit(evt,act)
+						Actions.cancelEdit(evt,act);
 					} else {
+						act.parent().parent().append('<img id="edit" src="img/edit.png" alt="Edit" title="Edit">');
 						$editInput.parent().html(labelText);
+						$checkbox.show();
 					}
 				}
 		} 
 	},
 
 	checkboxChecked: function(){
-		$(document).on("change", "input[type=checkbox]",function(evt){
+		$(document).on("change", "input:checkbox",function(evt){
 			if(this.checked){
 				Actions.checkList("before", evt);
 				$(this).parent().appendTo(Actions.checkedItems);
