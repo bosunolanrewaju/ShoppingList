@@ -1,18 +1,9 @@
-var $input = $("#item");
-var $listItems = $("#unchecked-list ul");
-var $checkedItems = $("#checked-list ul");
-
-// Adds item to listItems array and returns the new array
-var addListItem = function(item, list){
-	var content = '<label for="' + item.toLowerCase() + '">' + item + '</label>';
-		content += '<input type="checkbox" id="' + item.toLowerCase() + '" value="' + item + '">';
-		content += '<img id="delete" src="img/delete.png" alt="Delete" title="Delete">';
-		content += '<img id="edit" src="img/edit.png" alt="Edit" title="Edit">';
-	list.append('<li>'+ content +'</li>');
-}
-
 var Actions = {
 	onReady: function() {
+		this.input = $("#item");
+		this.listItems = $("#unchecked-list ul");
+		this.checkedItems = $("#checked-list ul");
+
 		// Set listeners for checkboxes
 		Actions.checkboxChecked();
 
@@ -32,41 +23,55 @@ var Actions = {
 
 	},
 
+	// Adds item to listItems array and returns the new array
+	addListItem: function(item, list){
+		var content = '<label for="' + item.toLowerCase() + '">' + item + '</label>';
+			content += '<input type="checkbox" id="' + item.toLowerCase() + '" value="' + item + '">';
+			content += '<img id="delete" src="img/delete.png" alt="Delete" title="Delete">';
+			content += '<img id="edit" src="img/edit.png" alt="Edit" title="Edit">';
+		list.append('<li>'+ content +'</li>');
+	},
+
 // Actions
 	validateInput: function(input){
+		input = $.trim(input);
 		if(input === "" || input === " "){
 			$("#error").text("Empty item cannot be added to the list");
 			return false;
+		} else if(/[+-.,!@#$%^&*();\/|<>"']/.test(input)){
+			$("#error").text("Invalid characters supplied");
+			return false;
 		} else {
+			$("#error").text("");
 			return true;
 		}
 	},
 
 	checkList: function(point, evt){
 		if(point === "after"){
-			if(!$listItems.has("li").length){
-				$listItems.text("Shopping list empty");
+			if(!Actions.listItems.has("li").length){
+				Actions.listItems.text("Shopping list empty");
 			};
-			if(!$checkedItems.has("li").length){
-				$checkedItems.text("Nothing purchased yet");
+			if(!Actions.checkedItems.has("li").length){
+				Actions.checkedItems.text("Nothing purchased yet");
 			};
 		} else if(point === "before"){
-			if(!$listItems.has("li").length){
-				$listItems.text("");
+			if(!Actions.listItems.has("li").length){
+				Actions.listItems.text("");
 			};
-			if(!$checkedItems.has("li").length && evt.target.type === "checkbox"){
-				$checkedItems.text("");
+			if(!Actions.checkedItems.has("li").length && evt.target.type === "checkbox"){
+				Actions.checkedItems.text("");
 			};
 		}
 	},
 
 	addItem: function(evt){
-		item = $input.val();
+		item = Actions.input.val();
 		if(Actions.validateInput(item)){
 			Actions.checkList("before", evt);
-			addListItem(item, $listItems);
-			$input.val("")
-			$input.focus();
+			Actions.addListItem(item, Actions.listItems);
+			Actions.input.val("")
+			Actions.input.focus();
 		}
 	},
 
@@ -84,7 +89,6 @@ var Actions = {
 		evt.preventDefault();
 		var $hiddenInput = act.siblings("input[type=hidden]");
 		var labelText = $hiddenInput.val();
-		console.log(labelText);
 		$hiddenInput.parent().text(labelText);
 	},
 
@@ -124,11 +128,11 @@ var Actions = {
 		$(document).on("change", "input[type=checkbox]",function(evt){
 			if(this.checked){
 				Actions.checkList("before", evt);
-				$(this).parent().appendTo($checkedItems);
+				$(this).parent().appendTo(Actions.checkedItems);
 				Actions.checkList("after", evt);
 			} else {
 				Actions.checkList("before", evt);
-				$(this).parent().appendTo($listItems);
+				$(this).parent().appendTo(Actions.listItems);
 				Actions.checkList("after", evt);
 			}
 		});
